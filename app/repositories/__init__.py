@@ -1,0 +1,1 @@
+from .compras_repository import ComprasRepository
