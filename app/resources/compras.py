@@ -8,10 +8,25 @@ compras = Blueprint('compras', __name__)
 
 compras_service = ComprasService()
 
-@compras.route('/add', methods=['POST'])
-def add_compra():
+@compras.route('/registrar_compra', methods=['POST'])
+def registrar_compra():
     datos_compra = request.get_json()
 
-    compra = Compra(**datos_compra)
-    compras_service.add(compra)
-    return jsonify({'status_code': 200}) # código de estado de compra correcto
+    try: 
+        compra = compras_service.registrar_compra(Compra(**datos_compra))
+        resp_data = jsonify({
+            'id': compra.id,
+            'producto_id': compra.producto_id,
+            'fecha_compra': compra.fecha_compra,
+            'direccion_envio': compra.direccion_envio 
+        })
+        return resp_data, 200 # código de estado de compra correcto
+    except BaseException as e:
+        print(e)
+        return jsonify({'msg': 'Error'}), 500
+
+@compras.route('/eliminar_compra/<int:id_compra>', methods=['DELETE'])
+def eliminar_compra(id_compra):
+    compras_service.eliminar_compra(id_compra)
+    resp = jsonify({'msg': f'Compra id={id_compra} eliminada'}, 200)
+    return resp

@@ -4,10 +4,13 @@ from app.models import Compra
 class ComprasService:
 
     def __init__(self):
-        self.catalogo_repository = ComprasRepository()
+        self.compras_repository = ComprasRepository()
 
-    def add(self, compra: Compra):
-        return self.catalogo_repository.add(compra)
+    def registrar_compra(self, compra: Compra):
+        return self.compras_repository.add(compra)
+
+    def eliminar_compra(self, id_compra: int):
+        return self.compras_repository.delete(id_compra)
 
     def get_by_id(self, id: int):
-        return self.catalogo_repository.get_by_id(id)
+        return self.compras_repository.get_by_id(id)
