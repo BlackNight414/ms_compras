@@ -27,6 +27,9 @@ def registrar_compra():
 
 @compras.route('/eliminar_compra/<int:id_compra>', methods=['DELETE'])
 def eliminar_compra(id_compra):
-    compras_service.eliminar_compra(id_compra)
-    resp = jsonify({'msg': f'Compra id={id_compra} eliminada'}, 200)
-    return resp
+    try:
+        observaciones = request.get_json()['observaciones']
+        compras_service.eliminar_compra(id_compra, observaciones)
+        return jsonify({'msg': f'Compra id={id_compra} eliminada'}, 200)
+    except:
+        return jsonify({'msg': 'Error'}), 500
