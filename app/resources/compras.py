@@ -3,24 +3,19 @@ from flask import jsonify, make_response, request
 
 from app.models import Compra
 from app.services import ComprasService
+from app.mapping import ComprasSchema
 
 compras = Blueprint('compras', __name__)
 
 compras_service = ComprasService()
+compras_schema = ComprasSchema()
 
 @compras.route('/registrar_compra', methods=['POST'])
 def registrar_compra():
-    datos_compra = request.get_json()
-
+    datos = request.get_json()
     try: 
-        compra = compras_service.registrar_compra(Compra(**datos_compra))
-        resp_data = jsonify({
-            'id': compra.id,
-            'producto_id': compra.producto_id,
-            'fecha_compra': compra.fecha_compra,
-            'direccion_envio': compra.direccion_envio 
-        })
-        return resp_data, 200 # código de estado de compra correcto
+        compra = compras_service.registrar_compra(compras_schema.load(datos))
+        return compras_schema.dump(compra), 200
     except BaseException as e:
         print(e)
         return jsonify({'msg': 'Error'}), 500
